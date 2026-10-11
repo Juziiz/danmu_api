@@ -31,7 +31,7 @@ jobs:
                 git merge FETCH_HEAD --no-commit --no-ff -m "chore: sync with upstream huangxd-/danmu_api"
                 # GITHUB_TOKEN 永远推不上去 workflow 文件变更：先清空再恢复我们自己的版本，
                 # 上游新增/改动的 workflow（如 test.yml）会被丢弃，不影响 Netlify 部署
-                git rm -rq .github/workflows
+                git rm -rqf .github/workflows
                 git checkout "$OUR_SHA" -- .github/workflows/
                 git commit -m "chore: sync with upstream huangxd-/danmu_api"
                 git push origin HEAD:main
