@@ -28,7 +28,7 @@ jobs:
                 git fetch upstream main
                 # 合并上游（与 GitHub "Sync fork → Update branch" 行为一致：可快进则快进，否则产生合并提交）
                 git merge FETCH_HEAD -m "chore: sync with upstream huangxd-/danmu_api"
-                git push origin main
+                git push origin HEAD:main
 
             - name: Check for new commits
               if: success()
