@@ -27,7 +27,7 @@ jobs:
                 git remote add upstream https://github.com/huangxd-/danmu_api.git
                 git fetch upstream main
                 # 仅允许快进合并；若上游与本地分叉则失败告警，避免覆盖仓库自有提交
-                git merge --ff-only upstream/main
+                git merge --ff-only FETCH_HEAD
                 git push origin main
 
             - name: Check for new commits
