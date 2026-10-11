@@ -28,11 +28,12 @@ jobs:
                 git remote add upstream https://github.com/huangxd-/danmu_api.git
                 git fetch upstream main
                 # 合并上游（与 GitHub "Sync fork → Update branch" 行为一致：可快进则快进，否则产生合并提交）
-                git merge FETCH_HEAD -m "chore: sync with upstream huangxd-/danmu_api"
-                # GITHUB_TOKEN 永远推不上去 workflow 文件变更：把 .github/workflows 恢复为我们自己的版本，
-                # 再并入合并提交（上游新增的 workflow 如 test.yml 会被丢弃，不影响 Netlify 部署）
+                git merge FETCH_HEAD --no-commit --no-ff -m "chore: sync with upstream huangxd-/danmu_api"
+                # GITHUB_TOKEN 永远推不上去 workflow 文件变更：先清空再恢复我们自己的版本，
+                # 上游新增/改动的 workflow（如 test.yml）会被丢弃，不影响 Netlify 部署
+                git rm -rq .github/workflows
                 git checkout "$OUR_SHA" -- .github/workflows/
-                git diff --cached --quiet || git commit --amend --no-edit
+                git commit -m "chore: sync with upstream huangxd-/danmu_api"
                 git push origin HEAD:main
 
             - name: Check for new commits
