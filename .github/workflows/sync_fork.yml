@@ -20,20 +20,14 @@ jobs:
                 token: ${{ secrets.GITHUB_TOKEN }}
                 fetch-depth: 0
 
-            - name: Sync with upstream
+            - name: Fast-forward sync with upstream
               run: |
                 git config user.name "github-actions[bot]"
                 git config user.email "github-actions[bot]@users.noreply.github.com"
-                OUR_SHA=$(git rev-parse HEAD)
                 git remote add upstream https://github.com/huangxd-/danmu_api.git
                 git fetch upstream main
                 # 合并上游（与 GitHub "Sync fork → Update branch" 行为一致：可快进则快进，否则产生合并提交）
-                git merge FETCH_HEAD --no-commit --no-ff -m "chore: sync with upstream huangxd-/danmu_api"
-                # GITHUB_TOKEN 永远推不上去 workflow 文件变更：先清空再恢复我们自己的版本，
-                # 上游新增/改动的 workflow（如 test.yml）会被丢弃，不影响 Netlify 部署
-                git rm -rqf .github/workflows
-                git checkout "$OUR_SHA" -- .github/workflows/
-                git commit -m "chore: sync with upstream huangxd-/danmu_api"
+                git merge FETCH_HEAD -m "chore: sync with upstream huangxd-/danmu_api"
                 git push origin HEAD:main
 
             - name: Check for new commits
@@ -44,7 +38,7 @@ jobs:
               if: failure()
               run: |
                   echo "[Error] Sync failed. This might be due to:"
-                  echo "1. Merge conflicts that need manual resolution"
+                  echo "1. Non-fast-forward upstream changes needing manual merge"
                   echo "2. Network issues"
                   echo "Please check the logs and consider manual sync if needed."
                   exit 1
